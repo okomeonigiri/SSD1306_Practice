@@ -1,13 +1,16 @@
 #include <Arduino.h>
 #include "output.h"
 #include "input.h"
+#include "AIP.h"
 
 void setup() {
-	myDisplay.setup();
+	general.setup();
 }
 
 void loop() {
-	myDisplay.preset(2); // 画面プリセット
-	delay(200);
+	myDisplay.clearDisplay();
+	general.startUp(); // 起動時の処理
+	
+	myDisplay.updateDisplay();
 }
 

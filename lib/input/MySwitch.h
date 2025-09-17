@@ -6,8 +6,8 @@
 class MySwitch {
 public:
     void setup();
-    void checkTactSwitch();
-    void checkToggleSwitch();
+    int checkTactSwitch();
+    bool checkToggleSwitch();
 private:
 };
 #endif // MYSWITCH_H

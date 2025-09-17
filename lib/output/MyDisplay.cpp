@@ -1,4 +1,5 @@
 #include "MyDisplay.h"
+#include <input.h>
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -143,10 +144,20 @@ void MyDisplay::drawLine(int x0, int y0, int x1, int y1) {
     }
 }
 
+void MyDisplay::drawRectangleFromCenter(int centerX, int centerY, int width, int height, bool filled) {
+    // 中心点から左上角の座標を計算
+    int x = centerX - width / 2;
+    int y = centerY - height / 2;
+    
+    // 既存のdrawRectangle関数を呼び出し
+    drawRectangle(x, y, width, height, filled);
+}
+
 void MyDisplay::preset(int mode) {
-    clearDisplay();
+    
     switch (mode) {
-        case 1://VEGA ロゴ　V.1
+        case 1: //VEGA ロゴ　V.1
+        clearDisplay();
             drawRectangle(32, 9, 64, 2, true);
             drawRectangle(32, 11, 63, 2, true);
 
@@ -239,8 +250,10 @@ void MyDisplay::preset(int mode) {
             drawRectangle(108, 54, 6, 4, true);
             drawRectangle(114, 50, 1, 8, true);
             drawRectangle(115, 55, 1, 3, true);
+            updateDisplay();
             break;
         case 2: { //VEGAロゴ+アニメーション
+            clearDisplay();
             float duration = 0.2; //アニメーションの速さ調整
             drawRectangle(16, 24, 7, 3, true);updateDisplay();delay(duration);
             drawRectangle(17, 27, 6, 1, true);updateDisplay();delay(duration);
@@ -334,12 +347,94 @@ void MyDisplay::preset(int mode) {
             drawRectangle(108, 54, 6, 4, true);updateDisplay();delay(duration);
             drawRectangle(114, 50, 1, 8, true);updateDisplay();delay(duration);
             drawRectangle(115, 55, 1, 3, true);updateDisplay();delay(duration);
+            updateDisplay();
+            break;
+            updateDisplay();
+        }
+        case 3:{//モードセレクト枠
+            {//右側扇形
+                drawLine(99,11,101,11);
+                drawLine(102,10,103,10);
+                drawPixel(104,9,true);
+                drawLine(105,8,105,7);
+                drawLine(106,6,106,4);
+                drawLine(107,3,107,0);
+                drawRectangle(115, 3, 5, 10, false); // 四角形追加
+
+                drawLine(29,12,98,12);
+            }
+            drawLine(29,12,98,12);//上側直線
+            {//左側扇形（左右対称）
+                drawLine(26,11,28,11);
+                drawLine(24,10,25,10);
+                drawPixel(23,9,true);
+                drawLine(22,8,22,7);
+                drawLine(21,6,21,4);
+                drawLine(20,3,20,0);
+            }
+
+            {//ボタン囲い
+            drawLine(0,51,127,51);
+            drawLine(39,52,39,63);
+            drawLine(88,52,88,63);
+            }
+
+            
             break;
         }
-        // 他のプリセットモードをここに追加可能
+        case 4: { //モードセレクト(アニメーション割り込み)
+            clearDisplay();
+            float temp = (float)select_frame_num; // float変数で正確な割り算
+            for (int i = 0; i < select_frame_num; i++) {
+                clearDisplay();
+                preset(3); // モードセレクト枠を描画
+                // float計算で正確な座標とサイズを計算
+                float progress = (float)i / temp;
+
+                drawRectangleFromCenter((int)(22 - 42 * progress),32,(int)(22 - 10 * progress),(int)(22 - 10 * progress),false); // 左
+
+                drawRectangleFromCenter((int)(106 - 42 * progress),32,(int)(22 + 10 * progress),(int)(22 + 10 * progress),false); // 右
+
+                drawRectangleFromCenter((int)(148 - 42 * progress),32,(int)(12 + 10 * progress),(int)(12 + 10 * progress),false); // 右2
+
+                drawRectangleFromCenter((int)(64 - 42 * progress),32,(int)(32 - 10 * progress),(int)(32 - 10 * progress),false); // 中央
+
+                drawText(2,54,"------",1);
+                drawText(46,54,"------",1);
+                drawText(91,54,"------",1);
+                drawLine(94,50,122,50);
+                drawLine(99,49,117,49);
+                switch (generalDisplayMode)
+                    {
+                    case 0:{
+                        drawText(38, 3, " Attack ", 1);
+                        break;
+                    }
+                    case 1:{
+                        drawText(36, 3, " Defense ", 1);
+                        break;
+                    }
+                    case 2:{
+                        drawText(38, 3, "  Test  ", 1);
+                        break;
+                    }
+                    default:{
+                    }
+                        drawText(36, 3, "Mode ? err", 1);
+                        break;
+                    }
+                if(mySwitch.checkToggleSwitch()){drawRectangle(116,4,3,4,true);} else {drawRectangle(116,8,3,4,true);}
+                updateDisplay();
+            }
+            updateDisplay();
+            break;
+        }
         default:
             drawText(0, 0, "Unknown Mode", 1);
             break;
     }
-    updateDisplay();
+}
+
+void MyDisplay::setGeneralDisplayMode(int mode) {
+    generalDisplayMode = mode;
 }
