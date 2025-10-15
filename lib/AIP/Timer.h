@@ -6,6 +6,7 @@ class Timer {
     public:
         void reset();
         unsigned long read_milli(); //時間を取得(1/1000s)
+        unsigned long set_milli(unsigned long ms);
         unsigned long read_micro(); //時間を取得(1/1000000s)
 
     private:

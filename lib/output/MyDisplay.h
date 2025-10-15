@@ -15,22 +15,23 @@ class MyDisplay {
 public:
     MyDisplay();  // コンストラクタ
     void setup();
-    
+
     // 基本描画機能（全てdrawPixelベース）
     void drawPixel(int x, int y, bool color);
     void updateDisplay();
     void clearDisplay();
     void drawText(int x, int y, const char* text, int size = 1);
+    void drawTextB(int x, int y, const char* text, int size = 1);
     void drawCircle(int centerX, int centerY, int radius, bool filled = false);
     void drawRectangle(int x, int y, int width, int height, bool filled = false);
     void drawRectangleFromCenter(int centerX, int centerY, int width, int height, bool filled = false);
     void drawLine(int x0, int y0, int x1, int y1);
     void preset(int mode); // 画面プリセット
     void setGeneralDisplayMode(int mode);
-    
+
     // 自作機能用のヘルパー関数（public）
     void drawHorizontalLine(int x1, int x2, int y);
-    
+
 private:
     const int select_frame_num=5;
     int generalDisplayMode=0;

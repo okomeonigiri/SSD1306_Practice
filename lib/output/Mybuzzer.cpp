@@ -19,6 +19,18 @@ void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
     }
 }
 
+void MyBUZZER::startS(int BUZZERnote, int BUZZERduration) {
+    if (useBUZZER == 1) {
+        if (BUZZERduration != 999) {
+            tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
+            delay(BUZZERduration * 1.5);
+            noTone(BUZZER_PIN);
+        } else {
+            tone(BUZZER_PIN, BUZZERnote);
+        }
+    }
+}
+
 void MyBUZZER::stop() {
     noTone(BUZZER_PIN);
 }

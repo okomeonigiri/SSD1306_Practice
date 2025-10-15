@@ -12,7 +12,7 @@ MyDisplay::MyDisplay() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET)
 void MyDisplay::setup() {
 	// I2C開始。必要なら 100kHz に落とす: Wire.setClock(100000);
 	Wire.begin();
-	Wire.setClock(400000);
+	Wire.setClock(800000);
 
 	// SSD1306 初期化（内部チャージポンプ使用）
 	if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
@@ -42,6 +42,13 @@ void MyDisplay::clearDisplay() {
 void MyDisplay::drawText(int x, int y, const char* text, int size) {
     display.setTextSize(size);
     display.setTextColor(SSD1306_WHITE);
+    display.setCursor(x, y);
+    display.print(text);
+}
+
+void MyDisplay::drawTextB(int x, int y, const char* text, int size) {
+    display.setTextSize(size);
+    display.setTextColor(SSD1306_BLACK);
     display.setCursor(x, y);
     display.print(text);
 }
@@ -406,22 +413,33 @@ void MyDisplay::preset(int mode) {
                 drawLine(99,49,117,49);
                 switch (generalDisplayMode)
                     {
-                    case 0:{
-                        drawText(38, 3, " Attack ", 1);
-                        break;
-                    }
-                    case 1:{
-                        drawText(36, 3, " Defense ", 1);
-                        break;
-                    }
-                    case 2:{
-                        drawText(38, 3, "  Test  ", 1);
-                        break;
-                    }
-                    default:{
-                    }
-                        drawText(36, 3, "Mode ? err", 1);
-                        break;
+                    case 0:
+                            drawText(38+8+1, 3, "Attack ", 1);
+                            break;
+                        case 1:
+                            drawText(36+8, 3, "Defense ", 1);
+                            break;
+                        case 2:
+                            drawText(38+16-2, 3, "Test  ", 1);
+                            break;
+                        case 3:
+                            drawText(38+8+4, 3, "motor ", 1);
+                            break;
+                        case 4:
+                            drawText(38+16-1, 3, "line  ", 1);
+                            break;
+                        case 5:
+                            drawText(38+16-1, 3, "ball  ", 1);
+                            break;
+                        case 6:
+                            drawText(38+16-1, 3, "gyro  ", 1);
+                            break;
+                        case 7:
+                            drawText(38+8+1, 3, "ATctrl ", 1);
+                            break;
+                        default:
+                            drawText(36, 3, "Mode ? err", 1);
+                            break;
                     }
                 if(mySwitch.checkToggleSwitch()){drawRectangle(116,4,3,4,true);} else {drawRectangle(116,8,3,4,true);}
                 updateDisplay();

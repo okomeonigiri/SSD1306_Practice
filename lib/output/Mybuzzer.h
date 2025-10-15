@@ -5,6 +5,7 @@ class MyBUZZER {
     public:
         void setup();
         void start(int BUZZERnote, int BUZZERduration); //音程、持続時間を指定して音を鳴らす　持続時間を999にすると無制限
+        void startS(int BUZZERnote, int BUZZERduration); //音程、持続時間を指定して音を鳴らす　持続時間を999にすると無制限
         void stop();
         void preset(int BUZZERpresetNUM); //既定の音を鳴らす
 
