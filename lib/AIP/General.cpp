@@ -2,6 +2,7 @@
 
 void General::setup() {
     Serial.begin(115200);
+    
     mybuzzer.start(400, 100);
     delay(50);
     mybuzzer.start(300, 100);

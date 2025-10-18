@@ -9,15 +9,23 @@
 MyDisplay::MyDisplay() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {
 }
 
+//Teensy 4.1
 void MyDisplay::setup() {
-	// I2C開始。必要なら 100kHz に落とす: Wire.setClock(100000);
+	// I2C開始。SDA=D25, SCL=D24を指定
 	Wire.begin();
+	Wire.setSDA(SDA_PIN);
+	Wire.setSCL(SCL_PIN);
 	Wire.setClock(800000);
 
 	// SSD1306 初期化（内部チャージポンプ使用）
 	if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
 		// 初期化失敗時は停止（必要ならここでエラー表示や点滅処理を）
-		while (true) {}
+		while (true) {//高速Lチカ
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(10);
+            digitalWrite(LED_BUILTIN, LOW);
+            delay(10);
+        }
 	}
 
 	// 画面を真っ黒にして反映（ここまでが"初期設定"）

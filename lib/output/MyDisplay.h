@@ -6,10 +6,12 @@
 #include <Arduino.h>
 
 
+#define SDA_PIN 25
+#define SCL_PIN 24
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET   -1      // リセット未接続なら -1
-#define OLED_ADDR    0x3C    // i2c_scanner で確認したアドレスに合わせる
+#define OLED_ADDR    0x3C   // i2c_scanner で確認したアドレスに合わせる
 
 class MyDisplay {
 public:
@@ -33,7 +35,7 @@ public:
     void drawHorizontalLine(int x1, int x2, int y);
 
 private:
-    const int select_frame_num=5;
+    const int select_frame_num=2;
     int generalDisplayMode=0;
     Adafruit_SSD1306 display;
 };
