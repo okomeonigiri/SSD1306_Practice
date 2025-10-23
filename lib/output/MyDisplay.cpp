@@ -6,25 +6,25 @@
 #include <Adafruit_SSD1306.h>
 
 // コンストラクタでdisplayオブジェクトを初期化
-MyDisplay::MyDisplay() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {
+MyDisplay::MyDisplay() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire2, OLED_RESET) {
 }
 
 //Teensy 4.1
 void MyDisplay::setup() {
 	// I2C開始。SDA=D25, SCL=D24を指定
-	Wire.begin();
-	Wire.setSDA(SDA_PIN);
-	Wire.setSCL(SCL_PIN);
-	Wire.setClock(800000);
+	Wire2.begin();
+	Wire2.setSDA(SDA_PIN);
+	Wire2.setSCL(SCL_PIN);
+	Wire2.setClock(10000);
 
 	// SSD1306 初期化（内部チャージポンプ使用）
 	if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
 		// 初期化失敗時は停止（必要ならここでエラー表示や点滅処理を）
 		while (true) {//高速Lチカ
             digitalWrite(LED_BUILTIN, HIGH);
-            delay(10);
+            delay(100);
             digitalWrite(LED_BUILTIN, LOW);
-            delay(10);
+            delay(100);
         }
 	}
 
@@ -422,31 +422,31 @@ void MyDisplay::preset(int mode) {
                 switch (generalDisplayMode)
                     {
                     case 0:
-                            drawText(38+8+1, 3, "Attack ", 1);
+                            drawText(38+8+1,mode_y, "Attack ", 1);
                             break;
                         case 1:
-                            drawText(36+8, 3, "Defense ", 1);
+                            drawText(36+8, mode_y, "Defense ", 1);
                             break;
                         case 2:
-                            drawText(38+16-2, 3, "Test  ", 1);
+                            drawText(38+16-2, mode_y, "Test  ", 1);
                             break;
                         case 3:
-                            drawText(38+8+4, 3, "motor ", 1);
+                            drawText(38+8+4, mode_y, "motor ", 1);
                             break;
                         case 4:
-                            drawText(38+16-1, 3, "line  ", 1);
+                            drawText(38+16-1, mode_y, "line  ", 1);
                             break;
                         case 5:
-                            drawText(38+16-1, 3, "ball  ", 1);
+                            drawText(38+16-1, mode_y, "ball  ", 1);
                             break;
                         case 6:
-                            drawText(38+16-1, 3, "gyro  ", 1);
+                            drawText(38+16-1, mode_y, "gyro  ", 1);
                             break;
                         case 7:
-                            drawText(38+8+1, 3, "ATctrl ", 1);
+                            drawText(38+8+1, mode_y, "ATctrl ", 1);
                             break;
                         default:
-                            drawText(36, 3, "Mode ? err", 1);
+                            drawText(36, mode_y, "Mode ? err", 1);
                             break;
                     }
                 if(mySwitch.checkToggleSwitch()){drawRectangle(116,4,3,4,true);} else {drawRectangle(116,8,3,4,true);}

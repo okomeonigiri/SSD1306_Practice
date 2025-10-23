@@ -26,7 +26,7 @@ void General::setup() {
     myDisplay.drawText(0, 30, "switch done", 1);
     myDisplay.drawText(0, 40, "buzzer done", 1);
     myDisplay.updateDisplay();
-    myDisplay.preset(1); // 画面プリセット
+    myDisplay.preset(0); // 画面プリセット
     mybuzzer.preset(0); // ブザープリセット
 }
 
@@ -55,31 +55,31 @@ void General::startUp() {
                 } else {
                     switch (mode) {
                         case 0:
-                            myDisplay.drawText(38+8+1, 3, "Attack ", 1);
+                            myDisplay.drawText(38+8+1, mode_y, "Attack ", 1);
                             break;
                         case 1:
-                            myDisplay.drawText(36+8, 3, "Defense ", 1);
+                            myDisplay.drawText(36+8, mode_y, "Defense ", 1);
                             break;
                         case 2:
-                            myDisplay.drawText(38+16-2, 3, "Test  ", 1);
+                            myDisplay.drawText(38+16-2, mode_y, "Test  ", 1);
                             break;
                         case 3:
-                            myDisplay.drawText(38+8+4, 3, "motor ", 1);
+                            myDisplay.drawText(38+8+4, mode_y, "motor ", 1);
                             break;
                         case 4:
-                            myDisplay.drawText(38+16-1, 3, "line  ", 1);
+                            myDisplay.drawText(38+16-1, mode_y, "line  ", 1);
                             break;
                         case 5:
-                            myDisplay.drawText(38+16-1, 3, "ball  ", 1);
+                            myDisplay.drawText(38+16-1, mode_y, "ball  ", 1);
                             break;
                         case 6:
-                            myDisplay.drawText(38+16-1, 3, "gyro  ", 1);
+                            myDisplay.drawText(38+16-1, mode_y, "gyro  ", 1);
                             break;
                         case 7:
-                            myDisplay.drawText(38+8+1, 3, "ATctrl ", 1);
+                            myDisplay.drawText(38+8+1, mode_y, "ATctrl ", 1);
                             break;
                         default:
-                            myDisplay.drawText(36, 3, "Mode ? err", 1);
+                            myDisplay.drawText(36, mode_y, "Mode ? err", 1);
                             break;
                     }
                 }
@@ -202,6 +202,10 @@ void General::startUp() {
                     mybuzzer.start(500, 50);
                     mybuzzer.start(500, 50);
                     phase = 0;
+                }
+
+                if(toggle==1){
+                    exit=false;
                 }
                 break;
             }

@@ -12,6 +12,7 @@ public:
     int getMode();
 
 private:
+    static constexpr byte mode_y=1;
     int tact=0;
     bool toggle=0;
     int mode=0;
