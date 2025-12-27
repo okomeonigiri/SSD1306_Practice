@@ -11,7 +11,7 @@ class MyBUZZER {
 
     private:
         const bool useBUZZER = 1;
-        const byte BUZZER_PIN = 23;
+        const byte BUZZER_PIN = 47;
 };
 
 #endif // MYBUZZER_H

@@ -4,31 +4,29 @@
 #include "Timer.h"
 #include "input.h"
 #include "output.h"
-class General
-{
+/*
+設定の配列テンプレート
+valuesにそのまま格納しますので配列から参照してくださいね
+キャッシュしておけば配列呼び出しのコストを減らせますよ
+
+String keys[]{
+}
+
+float values[]{
+}
+
+*/
+#define SIZEOF_ARR(arr) (sizeof(arr) / sizeof((arr)[0]))
+class General{
 public:
     void setup();
     void startUp();
     int getMode();
-
-private:
-    static constexpr byte mode_y=1;
-    int tact=0;
-    bool toggle=0;
+    inline void setMode(int m) { mode = m; }
+    inline void setPhase(int p) { phase = p; }
+    private:
     int mode=0;
     int phase=0;
-    Timer generalTimer;
-    struct BUTTON_LIST{
-        const char* first;
-        const char* second;
-        const char* third;
-        const char* fourth;
-        const char* fifth;
-        const char* sixth;
-    };
-    BUTTON_LIST buttonList;
-    bool pushedNext=false;
-    int lastBuzzer=0;
 };
 
 #endif // GENERAL_H
