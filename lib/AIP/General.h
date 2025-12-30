@@ -21,6 +21,9 @@ class General{
 public:
     void setup();
     void startUp();
+        void ModeSelect();
+        void StandBy();
+        void Setting();
     int getMode();
     inline void setMode(int m) { mode = m; }
     inline void setPhase(int p) { phase = p; }

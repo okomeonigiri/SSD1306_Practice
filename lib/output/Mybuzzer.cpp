@@ -11,10 +11,8 @@ void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
             tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
             delay(BUZZERduration * 1.5);
             noTone(BUZZER_PIN);
-            delay(10);
         } else {
             tone(BUZZER_PIN, BUZZERnote);
-            delay(10);
         }
     }
 }
