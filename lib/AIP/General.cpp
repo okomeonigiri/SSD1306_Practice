@@ -4,57 +4,50 @@
 #define VEGA_PRESET 1
 #define BORDER_PRESET 3
 #define MODE_SELECT_ANIMATINON 4
-
 constexpr byte mode_y=1;
 int tact=0;
 bool toggle=0;
 bool exit_=true;
 Timer generalTimer;
 bool pushedNext=false;
-int lastBuzzer=0;
 const int radius=5;
 template<typename T, size_t N>
-int size(T (&a)[N]){
-    return N;
+int size(T (&a)[N]){return N;}
+
+inline void General::WaitReleaseTact() {
+    while(mySwitch.checkTactSwitch()!=0){};
 }
 
-struct MYUI{
-    const char* mode_names[8] = {
-        "Attack",
-        "Defense",
-        "Test",
-        "motor",
-        "line",
-        "ball",
-        "gyro",
-        "ATctrl"
-    };
+//auto& UI=myDisplay.UI;
+//UI→myDisplay.UI
 
-    const char* Title;
-
-    struct BUTTON_LIST{
-        const char* first;
-        const char* second;
-        const char* third;
-        const char* fourth;//ctrl廃止で使わないーー
-        const char* fifth;
-        const char* sixth;
-    } buttonList;
-} UI;
-
-inline void control_guide(){
-    if(tact >= 100) { // 操作表示
-        myDisplay.drawText(2, 54, UI.buttonList.fourth, 1);
-        myDisplay.drawText(46, 54, UI.buttonList.fifth, 1);
-        myDisplay.drawText(91, 54, UI.buttonList.sixth, 1);
+inline void General::control_guide(bool brack) {
+    auto& UI=myDisplay.UI;
+    if(brack) {
+        if(tact >= 100) { // 操作表示
+            myDisplay.drawTextB(2, 54, UI.buttonList.fourth, 1);
+            myDisplay.drawTextB(46, 54, UI.buttonList.fifth, 1);
+            myDisplay.drawTextB(91, 54, UI.buttonList.sixth, 1);
+        } else {
+            myDisplay.drawTextB(2, 54, UI.buttonList.first, 1);
+            myDisplay.drawTextB(46, 54, UI.buttonList.second, 1);
+            myDisplay.drawTextB(91, 54, UI.buttonList.third, 1);
+        }
     } else {
-        myDisplay.drawText(2, 54, UI.buttonList.first, 1);
-        myDisplay.drawText(46, 54, UI.buttonList.second, 1);
-        myDisplay.drawText(91, 54, UI.buttonList.third, 1);
+        if(tact >= 100) { // 操作表示
+            myDisplay.drawText(2, 54, UI.buttonList.fourth, 1);
+            myDisplay.drawText(46, 54, UI.buttonList.fifth, 1);
+            myDisplay.drawText(91, 54, UI.buttonList.sixth, 1);
+        } else {
+            myDisplay.drawText(2, 54, UI.buttonList.first, 1);
+            myDisplay.drawText(46, 54, UI.buttonList.second, 1);
+            myDisplay.drawText(91, 54, UI.buttonList.third, 1);
+        }
     }
 }
 
 void General::setup() {
+    generalTimer.reset();
     Serial.begin(115200);
     mybuzzer.start(400, 100);
     delay(50);
@@ -79,22 +72,29 @@ void General::setup() {
     myDisplay.drawText(0, 30, "switch done", 1);
     myDisplay.drawText(0, 40, "buzzer done", 1);
     myDisplay.updateDisplay();
+    myDisplay.clearDisplay();
+    myDisplay.drawText(0, 0, "VEGA", 2);
+    myDisplay.drawText(0, 20, "setup done", 1);
+    myDisplay.drawText(0, 30, "[SUCCESS]", 1);
+    String msg = String("Took ") + generalTimer.read_milli() + " ms";
+    myDisplay.drawText(0, 40, msg.c_str(), 1);
+    myDisplay.updateDisplay();
+    while(mySwitch.checkTactSwitch()!=0){};
     myDisplay.preset(1); // 画面プリセット
     mybuzzer.preset(0); // ブザープリセット
     setMode(0);
     setPhase(0);
 }
-
 void General::startUp() {
     exit_ = true;
     pushedNext = false;
-    generalTimer.reset(); // ここで一度だけリセット
-
     while(exit_) {
+        generalTimer.reset();
         myDisplay.clearDisplay();
         tact = mySwitch.checkTactSwitch();
         toggle = mySwitch.checkToggleSwitch();
         myDisplay.preset(BORDER_PRESET);
+        myDisplay.setGeneralDisplayMode(mode);
         switch(phase) {
             case 0: {//モードセレクト
                 ModeSelect();
@@ -107,13 +107,16 @@ void General::startUp() {
             }
 
             case 2: {//設定
+                Setting();
+                break;
+            }
         }
         myDisplay.updateDisplay();
     }
 }
-}
 
 void General::ModeSelect() {
+    auto& UI=myDisplay.UI;
     UI.buttonList.first="Adjust";
     UI.buttonList.second="Select";
     UI.buttonList.third="next >";
@@ -123,62 +126,7 @@ void General::ModeSelect() {
     if(!pushedNext && generalTimer.read_milli() < 1000) { // 1秒後に自動でモードセレクト表示
         myDisplay.drawText(32, 3, "Mode select", 1);
     } else {
-        switch (mode) {
-            case 0:
-                myDisplay.drawTextCenter(38, mode_y, "Attack", 1);
-                break;
-            case 1:
-                myDisplay.drawTextCenter(36, mode_y, "Defense", 1);
-                break;
-            case 2:
-                myDisplay.drawTextCenter(38, mode_y, "Test", 1);
-                break;
-            case 3:
-                myDisplay.drawTextCenter(38, mode_y, "motor", 1);
-                break;
-            case 4:
-                myDisplay.drawTextCenter(38, mode_y, "line", 1);
-                break;
-            case 5:
-                myDisplay.drawTextCenter(38, mode_y, "ball", 1);
-                break;
-            case 6:
-                myDisplay.drawTextCenter(38, mode_y, "gyro", 1);
-                break;
-            case 7:
-                myDisplay.drawTextCenter(38, mode_y, "ATctrl", 1);
-                break;
-            default:
-                myDisplay.drawTextCenter(38, mode_y, "Mode ? err", 1);
-                break;
-            // case 0:
-            // myDisplay.drawText(38+8+1, mode_y, "Attack ", 1);
-            // break;
-            // case 1:
-            //     myDisplay.drawText(36+8, mode_y, "Defense ", 1);
-            //     break;
-            // case 2:
-            //     myDisplay.drawText(38+16-2, mode_y, "Test  ", 1);
-            //     break;
-            // case 3:
-            //     myDisplay.drawText(38+8+4, mode_y, "motor ", 1);
-            //     break;
-            // case 4:
-            //     myDisplay.drawText(38+16-1, mode_y, "line  ", 1);
-            //     break;
-            // case 5:
-            //     myDisplay.drawText(38+16-1, mode_y, "ball  ", 1);
-            //     break;
-            // case 6:
-            //     myDisplay.drawText(38+16-1, mode_y, "gyro  ", 1);
-            //     break;
-            // case 7:
-            //     myDisplay.drawText(38+8+1, mode_y, "ATctrl ", 1);
-            //     break;
-            // default:
-            //     myDisplay.drawText(36, mode_y, "Mode ? err", 1);
-            //     break;
-        }
+        myDisplay.drawTextCenter(64, mode_y,UI.mode_names[mode], 1);
     }
 
     control_guide();
@@ -190,6 +138,7 @@ void General::ModeSelect() {
 
     // ボタンぷにぷに+トグル
     { int modT = tact >= 100 ? tact - 100 : tact; if(toggle) { myDisplay.drawRectangle(116, 4, 3, 4, true); } else { myDisplay.drawRectangle(116, 8, 3, 4, true); } if(modT == 1 || modT == 4 || modT == 6 || modT == 9) { myDisplay.drawLine(5, 50, 33, 50); myDisplay.drawLine(10, 49, 28, 49); } if(modT == 3 || modT == 4 || modT == 8 || modT == 9) { myDisplay.drawLine(45, 50, 82, 50); myDisplay.drawLine(50, 49, 77, 49); } if(modT == 5 || modT == 6 || modT == 8 || modT == 9) { myDisplay.drawLine(94, 50, 122, 50); myDisplay.drawLine(99, 49, 117, 49); } }
+
     if(tact == 5) {
         pushedNext = true;
         mode = (mode + 1) % 8;
@@ -199,8 +148,8 @@ void General::ModeSelect() {
         mybuzzer.stop();
     }
 
-    if(tact == 3) {
-        // control_guide();
+    if(tact == 3) {//next
+        control_guide(true);
         myDisplay.drawText(2, 54, "------", 1);
         myDisplay.drawText(46, 54, "------", 1);
         myDisplay.drawText(91, 54, "------", 1);
@@ -224,7 +173,6 @@ void General::ModeSelect() {
     if(tact == 105){
         pushedNext = true;
         mode = (mode - 1) < 0 ? 7 : mode - 1;
-        myDisplay.setGeneralDisplayMode(mode);
         mybuzzer.start(500, 999);
         myDisplay.preset(4,1);
         mybuzzer.stop();
@@ -232,13 +180,15 @@ void General::ModeSelect() {
 }
 
 void General::StandBy() {
+    auto& UI=myDisplay.UI;
+    static unsigned long lastbuzzer = millis();;
     myDisplay.drawText(36, 3, " Stand by ", 1);
-    if(generalTimer.read_milli()>=500) {
-        mybuzzer.startS(400, 999);
+    if(millis()-lastbuzzer>=500) {
+        mybuzzer.start(400, 999);
     }
-    if(generalTimer.read_milli()>=550) {
+    if(millis()-lastbuzzer>=550) {
         mybuzzer.stop();
-        generalTimer.reset();
+        lastbuzzer=millis();
     }
     UI.buttonList.first="< Back";
     UI.buttonList.second="SetDir";
@@ -248,15 +198,9 @@ void General::StandBy() {
     UI.buttonList.sixth="------";
     // ボタンぷにぷに+トグル
     { int modT = tact >= 100 ? tact - 100 : tact; if(toggle) { myDisplay.drawRectangle(116, 4, 3, 4, true); } else { myDisplay.drawRectangle(116, 8, 3, 4, true); } if(modT == 1 || modT == 4 || modT == 6 || modT == 9) { myDisplay.drawLine(5, 50, 33, 50); myDisplay.drawLine(10, 49, 28, 49); } if(modT == 3 || modT == 4 || modT == 8 || modT == 9) { myDisplay.drawLine(45, 50, 82, 50); myDisplay.drawLine(50, 49, 77, 49); } if(modT == 5 || modT == 6 || modT == 8 || modT == 9) { myDisplay.drawLine(94, 50, 122, 50); myDisplay.drawLine(99, 49, 117, 49); } }
-    if(tact >= 100) { // 操作表示
-        myDisplay.drawText(2, 54, UI.buttonList.fourth, 1);
-        myDisplay.drawText(46, 54, UI.buttonList.fifth, 1);
-        myDisplay.drawText(91, 54, UI.buttonList.sixth, 1);
-    } else {
-        myDisplay.drawText(2, 54, UI.buttonList.first, 1);
-        myDisplay.drawText(46, 54, UI.buttonList.second, 1);
-        myDisplay.drawText(91, 54, UI.buttonList.third, 1);
-    }
+
+    control_guide();
+
     if(tact == 1) {// 戻る
         phase = 0;
         if(tact >= 100) { // 操作表示
@@ -277,12 +221,25 @@ void General::StandBy() {
         phase = 0;
     }
 
+    if(tact==3) {// SetDir
+        mybuzzer.start(300, 500);
+        lastbuzzer=millis()-500;
+    }
+
+    if(tact==5) {// CODSET
+        mybuzzer.start(500, 50);
+        mybuzzer.start(500, 50);
+        WaitReleaseTact();
+        lastbuzzer=millis()-500;
+    }
+
     if(toggle==1){
         exit_=false;
     }
 }
 
 void General::Setting() {
+    auto& UI=myDisplay.UI;
     static int cursor=0;
     UI.buttonList.first="< Back";
     UI.buttonList.second="select";
@@ -334,3 +291,5 @@ int General::getMode() {
     // モード取得の処理があればここに追加
     return mode; // 仮の戻り値
 }
+
+#undef UI

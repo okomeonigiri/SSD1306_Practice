@@ -15,8 +15,31 @@
 
 class MyDisplay {
 public:
-
     static constexpr byte mode_y=1;
+
+    struct MYUI{
+        const char* mode_names[8] = {
+            "Attack",
+            "Defense",
+            "Test",
+            "Motor",
+            "Line",
+            "Ball",
+            "Gyro",
+            "ATctrl"
+        };
+
+        const char* Title;
+
+        struct BUTTON_LIST{
+            const char* first;
+            const char* second;
+            const char* third;
+            const char* fourth;// ctrl廃止で使わないーー
+            const char* fifth;//  |
+            const char* sixth;//  |
+        } buttonList;
+    } UI;
 
     MyDisplay();  // コンストラクタ
     void setup();
@@ -29,7 +52,6 @@ public:
     void drawText(int x, int y, const char* text, int size = 1);
     void drawTextB(int x, int y, const char* text, int size = 1);
     void drawTextCenter(int centerX, int y, const char* text, int size = 1);
-    void drawTestCenter(int centerX, int y, const char* text, int size = 1) { drawTextCenter(centerX, y, text, size); }
     void drawCircle(int centerX, int centerY, int radius, bool filled = false);
     void drawCircleFromCenter(int centerX, int centerY, int radius, bool filled = false); // drawCircleのエイリアス
     void drawRectangle(int x, int y, int width, int height, bool filled = false);
@@ -43,14 +65,12 @@ public:
 
     // 自作機能用のヘルパー関数（public）
     void drawHorizontalLine(int x1, int x2, int y);
-    
+
     // シリアルモニター出力機能
     void printDisplayToSerial(); // 画面内容をシリアルモニターに出力
 
     // 動的ビットマップリサイズ機能
-    void drawResizedBitmap(int16_t x, int16_t y, const uint8_t *bitmap, 
-                          int16_t original_w, int16_t original_h, 
-                          int16_t new_w, int16_t new_h, uint16_t color);
+    void drawResizedBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t original_w, int16_t original_h, int16_t new_w, int16_t new_h, uint16_t color);
 
 private:
     const int radius=5;

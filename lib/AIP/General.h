@@ -16,7 +16,6 @@ float values[]{
 }
 
 */
-#define SIZEOF_ARR(arr) (sizeof(arr) / sizeof((arr)[0]))
 class General{
 public:
     void setup();
@@ -25,9 +24,11 @@ public:
         void StandBy();
         void Setting();
     int getMode();
-    inline void setMode(int m) { mode = m; }
-    inline void setPhase(int p) { phase = p; }
-    private:
+        inline void setMode(int m) { mode = m; }
+        inline void setPhase(int p) { phase = p; }
+private:
+    inline void control_guide(bool brack = false);
+    inline void WaitReleaseTact();
     int mode=0;
     int phase=0;
 };

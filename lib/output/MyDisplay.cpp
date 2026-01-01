@@ -1,6 +1,5 @@
 #include "MyDisplay.h"
 #include <input.h>
-
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -71,7 +70,9 @@ void MyDisplay::drawTextCenter(int centerX, int y, const char* text, int size) {
     const int textLen = static_cast<int>(strlen(text));
     const int textWidthPx = textLen * charWidthPx * size;
 
-    int x = centerX - (textWidthPx / 2);
+
+    // 切り捨て（整数除算）で中心合わせ
+    int x = centerX - (textWidthPx / 2) + 1;
     if (textWidthPx >= SCREEN_WIDTH) {
         x = 0;
     } else if (x < 0) {
@@ -549,35 +550,7 @@ void MyDisplay::preset(int mode, int param) {
                     drawText(91,54,"------",1);
                     drawLine(94,50,122,50);
                     drawLine(99,49,117,49);
-                    switch (generalDisplayMode) {
-                        case 0:
-                            drawText(38+8+1,mode_y, "Attack ", 1);
-                            break;
-                        case 1:
-                            drawText(36+8, mode_y, "Defense ", 1);
-                            break;
-                        case 2:
-                            drawText(38+16-2, mode_y, "Test  ", 1);
-                            break;
-                        case 3:
-                            drawText(38+8+4, mode_y, "motor ", 1);
-                            break;
-                        case 4:
-                            drawText(38+16-1, mode_y, "line  ", 1);
-                            break;
-                        case 5:
-                            drawText(38+16-1, mode_y, "ball  ", 1);
-                            break;
-                        case 6:
-                            drawText(38+16-1, mode_y, "gyro  ", 1);
-                            break;
-                        case 7:
-                            drawText(38+8+1, mode_y, "ATctrl ", 1);
-                            break;
-                        default:
-                            drawText(36, mode_y, "Mode ? err", 1);
-                            break;
-                    }
+                    drawTextCenter(64, mode_y, UI.mode_names[generalDisplayMode], 1);
                     if (mySwitch.checkToggleSwitch()) {
                         drawRectangle(116,4,3,4,true);
                     } else {
@@ -602,45 +575,21 @@ void MyDisplay::preset(int mode, int param) {
                     drawText(2,54,"------",1);
                     drawText(46,54,"------",1);
                     drawText(91,54,"------",1);
-                    drawLine(94,50,122,50);
+
+                    drawLine(94,50,122,50);//ボタンプニプニのやつ
                     drawLine(99,49,117,49);
-                    switch (generalDisplayMode) {
-                        case 0:
-                            drawText(38+8+1,mode_y, "Attack ", 1);
-                            break;
-                        case 1:
-                            drawText(36+8, mode_y, "Defense ", 1);
-                            break;
-                        case 2:
-                            drawText(38+16-2, mode_y, "Test  ", 1);
-                            break;
-                        case 3:
-                            drawText(38+8+4, mode_y, "motor ", 1);
-                            break;
-                        case 4:
-                            drawText(38+16-1, mode_y, "line  ", 1);
-                            break;
-                        case 5:
-                            drawText(38+16-1, mode_y, "ball  ", 1);
-                            break;
-                        case 6:
-                            drawText(38+16-1, mode_y, "gyro  ", 1);
-                            break;
-                        case 7:
-                            drawText(38+8+1, mode_y, "ATctrl ", 1);
-                            break;
-                        default:
-                            drawText(36, mode_y, "Mode ? err", 1);
-                            break;
-                    }
+
+                    drawTextCenter(64, mode_y, UI.mode_names[generalDisplayMode], 1);
+                    
                     if (mySwitch.checkToggleSwitch()) {
                         drawRectangle(116,4,3,4,true);
                     } else {
                         drawRectangle(116,8,3,4,true);
                     }
+
                     updateDisplay();
                 }
-                updateDisplay();
+                updateDisplay();//念の為　多分あったほうがいいのだろうけど
             }
             break;
         }
