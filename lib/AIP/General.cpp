@@ -55,21 +55,12 @@ void General::setup() {
     myDisplay.setup();
     myDisplay.clearDisplay();
     myDisplay.drawText(0, 0, "VEGA", 2);
-    myDisplay.drawText(0, 20, "displaydone", 1);
-    myDisplay.drawText(0, 30, "switch<-", 1);
+    myDisplay.drawText(0, 20, "display done", 1);
     myDisplay.updateDisplay();
     mySwitch.setup(); // スイッチの初期化
-    myDisplay.clearDisplay();
-    myDisplay.drawText(0, 0, "VEGA", 2);
-    myDisplay.drawText(0, 20, "displaydone", 1);
     myDisplay.drawText(0, 30, "switch done", 1);
-    myDisplay.drawText(0, 40, "buzzer<-", 1);
     myDisplay.updateDisplay();
     mybuzzer.setup(); // ブザーの初期化
-    myDisplay.clearDisplay();
-    myDisplay.drawText(0, 0, "VEGA", 2);
-    myDisplay.drawText(0, 20, "displaydone", 1);
-    myDisplay.drawText(0, 30, "switch done", 1);
     myDisplay.drawText(0, 40, "buzzer done", 1);
     myDisplay.updateDisplay();
     myDisplay.clearDisplay();
@@ -228,6 +219,7 @@ void General::StandBy() {
 
     if(tact==5) {// CODSET
         mybuzzer.start(500, 50);
+        delay(50);
         mybuzzer.start(500, 50);
         WaitReleaseTact();
         lastbuzzer=millis()-500;
@@ -264,14 +256,6 @@ void General::Setting() {
         mybuzzer.start(1600, 50);
         delay(50);
     }
-    switch (mode){
-        case 1:{// Defense
-        }
-        default:{
-            myDisplay.drawText(0,0,"No setting lol",1);
-            break;
-        }
-    }
     myDisplay.drawTextCenter(64,0,"Defense",1);
         cursor = cursor % size(defense.keys);
         myDisplay.drawTextCenter(64,16,defense.keys[cursor-1<0 ? size(defense.keys)-1 : cursor-1].c_str(),1);
@@ -280,9 +264,10 @@ void General::Setting() {
         int W = (int)strlen(defense.keys[cursor].c_str()) * 6;
         myDisplay.drawRectangle(64 - W/2 -2, 25, W +4, 10, false);
 
-        if(mySwitch.checkTactSwitch()==5){
-            cursor=(cursor+1)%size(defense.keys);
-            mybuzzer.start(800,50);
+    if(mySwitch.checkTactSwitch()==5){
+        cursor=(cursor+1)%size(defense.keys);
+        mybuzzer.start(800,50);
+        delay(50);
     }
 }
 
