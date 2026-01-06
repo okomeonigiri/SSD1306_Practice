@@ -593,6 +593,11 @@ void MyDisplay::preset(int mode, int param) {
             }
             break;
         }
+        case 5: { //不明なモード表示
+            clearDisplay();
+            updateDisplay();
+            break;
+        }
         default: {
             char* unknownMode = (char*)malloc(20);
             sprintf(unknownMode, "Mode %d?", mode);

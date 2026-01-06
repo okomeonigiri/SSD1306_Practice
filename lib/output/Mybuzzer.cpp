@@ -5,12 +5,16 @@ void MyBUZZER::setup() {
     pinMode(BUZZER_PIN, OUTPUT);
 }
 
-void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
+void MyBUZZER::start(int BUZZERnote, int BUZZERduration,bool unblock) {
     if (useBUZZER == 1) {
         if (BUZZERduration != 999) {
-            tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
-            delay(BUZZERduration*1.1);
-            noTone(BUZZER_PIN);
+            if(!unblock){
+                tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
+                delay(BUZZERduration*1.1);
+                noTone(BUZZER_PIN);
+            } else {
+                tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
+            }
         } else {
             tone(BUZZER_PIN, BUZZERnote);
         }
